@@ -1,5 +1,4 @@
-// Ganti dengan URL Web App dari Google Apps Script Anda
-const WEB_APP_URL = "PASTE_WEB_APP_URL_DI_SINI";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwy1le9r0X4cJ0Y5OyIIH1nbicvjt0azhzrx9ZqoXKhq6jKvDsc04KrvwED4CMHtZ1XbA/exec";
 
 document.getElementById('searchForm').addEventListener('submit', async function(e) {
   e.preventDefault();
