@@ -1,46 +1,42 @@
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7Wmc99-B0w5p16EflJPhLP7auk5VNwrvR85z4bxgNxDvoPkAyeJKjhC6ZyJgwRX1QHw/exec";
+const MAIN_FOLDER_ID = "1EcYbzlqjZWaRBCAiqQ1bv2rSmt8f49cF";
 
-document.getElementById('searchForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
+function doGet(e) {
+  const nama = (e && e.parameter && e.parameter.nama) ? e.parameter.nama.trim().toLowerCase() : "";
 
-  const nama = document.getElementById('nama').value.trim();
-  const sekolah = document.getElementById('sekolah').value;
-  const statusDiv = document.getElementById('status');
-  const resultDiv = document.getElementById('result');
-
-  statusDiv.innerText = "Mencari berkas di Google Drive...";
-  resultDiv.innerHTML = "";
+  if (!nama) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: "Nama tidak boleh kosong" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 
   try {
-    const response = await fetch(`${WEB_APP_URL}?nama=${encodeURIComponent(nama)}&sekolah=${encodeURIComponent(sekolah)}`);
-    const data = await response.json();
+    const folder = DriveApp.getFolderById(MAIN_FOLDER_ID);
+    const files = folder.getFiles();
+    let resultList = [];
 
-    if (!data.success) {
-      statusDiv.innerText = "Terjadi kesalahan saat melakukan pencarian.";
-      return;
+    while (files.hasNext()) {
+      let file = files.next();
+      let fileName = file.getName();
+      
+      // Pencarian tidak peka huruf besar/kecil (case-insensitive)
+      if (fileName.toLowerCase().indexOf(nama) !== -1) {
+        resultList.push({
+          id: file.getId(),
+          name: fileName,
+          url: file.getUrl(),
+          downloadUrl: `https://drive.google.com/uc?export=download&id=${file.getId()}`
+        });
+      }
     }
 
-    if (data.data.length === 0) {
-      statusDiv.innerText = "Kartu peserta tidak ditemukan. Pastikan ejaan nama sudah benar.";
-      return;
-    }
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      data: resultList
+    })).setMimeType(ContentService.MimeType.JSON);
 
-    statusDiv.innerText = "";
-    data.data.forEach(file => {
-      const item = document.createElement('div');
-      item.className = 'result-item';
-      item.innerHTML = `
-        <p><strong>${file.name}</strong></p>
-        <div class="action-buttons">
-          <a href="${file.url}" target="_blank" class="btn btn-view">Pratinjau</a>
-          <a href="${file.downloadUrl}" target="_blank" class="btn btn-download">Unduh PDF</a>
-        </div>
-      `;
-      resultDiv.appendChild(item);
-    });
-
-  } catch (err) {
-    console.error(err);
-    statusDiv.innerText = "Gagal terhubung ke server.";
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
   }
-});
+}
