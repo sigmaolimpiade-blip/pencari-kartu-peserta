@@ -21,10 +21,29 @@ body {
   max-width: 450px;
 }
 
+/* Style untuk Logo */
+.logo {
+  display: block;
+  max-width: 100px;
+  height: auto;
+  margin: 0 auto 15px auto;
+}
+
 h2 {
   margin-top: 0;
+  margin-bottom: 5px;
   text-align: center;
   color: #333;
+}
+
+/* Style untuk Sub-judul */
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #007bff;
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 .form-group {
