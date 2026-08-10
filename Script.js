@@ -1,42 +1,46 @@
-const MAIN_FOLDER_ID = "1EcYbzlqjZWaRBCAiqQ1bv2rSmt8f49cF";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbycf0du-iBsUPKMWSu7qat71e2HJfJIowhToTYKZIwQWjERWKoq_E_3P1F2J6cxyg2DJg/exec";
 
-function doGet(e) {
-  const nama = (e && e.parameter && e.parameter.nama) ? e.parameter.nama.trim().toLowerCase() : "";
+document.getElementById('searchForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-  if (!nama) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: "Nama tidak boleh kosong" }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
+  const nama = document.getElementById('nama').value.trim();
+  const sekolah = document.getElementById('sekolah').value;
+  const statusDiv = document.getElementById('status');
+  const resultDiv = document.getElementById('result');
+
+  statusDiv.innerText = "Mencari berkas di Google Drive...";
+  resultDiv.innerHTML = "";
 
   try {
-    const folder = DriveApp.getFolderById(MAIN_FOLDER_ID);
-    const files = folder.getFiles();
-    let resultList = [];
+    const response = await fetch(`${WEB_APP_URL}?nama=${encodeURIComponent(nama)}&sekolah=${encodeURIComponent(sekolah)}`);
+    const data = await response.json();
 
-    while (files.hasNext()) {
-      let file = files.next();
-      let fileName = file.getName();
-      
-      // Pencarian tidak peka huruf besar/kecil (case-insensitive)
-      if (fileName.toLowerCase().indexOf(nama) !== -1) {
-        resultList.push({
-          id: file.getId(),
-          name: fileName,
-          url: file.getUrl(),
-          downloadUrl: `https://drive.google.com/uc?export=download&id=${file.getId()}`
-        });
-      }
+    if (!data.success) {
+      statusDiv.innerText = "Terjadi kesalahan saat melakukan pencarian: " + (data.message || "");
+      return;
     }
 
-    return ContentService.createTextOutput(JSON.stringify({
-      success: true,
-      data: resultList
-    })).setMimeType(ContentService.MimeType.JSON);
+    if (data.data.length === 0) {
+      statusDiv.innerText = "Kartu peserta tidak ditemukan. Pastikan ejaan nama sudah benar.";
+      return;
+    }
 
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({
-      success: false,
-      message: error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
+    statusDiv.innerText = "";
+    data.data.forEach(file => {
+      const item = document.createElement('div');
+      item.className = 'result-item';
+      item.innerHTML = `
+        <p><strong>${file.name}</strong></p>
+        <div class="action-buttons">
+          <a href="${file.url}" target="_blank" class="btn btn-view">Pratinjau</a>
+          <a href="${file.downloadUrl}" target="_blank" class="btn btn-download">Unduh PDF</a>
+        </div>
+      `;
+      resultDiv.appendChild(item);
+    });
+
+  } catch (err) {
+    console.error(err);
+    statusDiv.innerText = "Gagal terhubung ke server.";
   }
-}
+});
