@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pencarian Kartu Peserta</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="card">
+    <h2>Cari Kartu Peserta</h2>
+    <form id="searchForm">
+      <div class="form-group">
+        <label for="nama">Nama Peserta</label>
+        <input type="text" id="nama" placeholder="Masukkan nama lengkap..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="sekolah">Tingkat / Jenjang Sekolah</label>
+        <select id="sekolah" required>
+          <option value="">-- Pilih Jenjang --</option>
+          <option value="SD/MI">SD / MI</option>
+          <option value="SMP/MTS">SMP / MTS</option>
+          <option value="SMA/SMK/MA">SMA / SMK / MA</option>
+        </select>
+      </div>
+
+      <button type="submit" id="btnSearch">Cari Kartu</button>
+    </form>
+
+    <div id="status"></div>
+    <div id="result"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
