@@ -1,4 +1,4 @@
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwy1le9r0X4cJ0Y5OyIIH1nbicvjt0azhzrx9ZqoXKhq6jKvDsc04KrvwED4CMHtZ1XbA/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby2rGdThJ8P53dAOjNafKqT86SwvMSpgbH748J3vWoAL6MHWos7TD-ew6An3ZZ95MIddA/exec";
 
 document.getElementById('searchForm').addEventListener('submit', async function(e) {
   e.preventDefault();
