@@ -21,7 +21,7 @@ body {
   max-width: 450px;
 }
 
-/* Style untuk Logo */
+/* Style untuk Logo di Tengah */
 .logo {
   display: block;
   max-width: 100px;
@@ -31,17 +31,17 @@ body {
 
 h2 {
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   text-align: center;
   color: #333;
 }
 
-/* Style untuk Sub-judul */
+/* Style untuk Teks Subtitle di Tengah */
 .subtitle {
   text-align: center;
   font-size: 14px;
-  font-weight: bold;
-  color: #007bff;
+  font-weight: 600;
+  color: #444;
   margin-top: 0;
   margin-bottom: 20px;
 }
